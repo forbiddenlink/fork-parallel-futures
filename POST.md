@@ -12,7 +12,7 @@ cover_image: cover.png
 
 **Fork** takes a hard decision and spins up a separate Hermes agent for each option. Every agent goes and *lives out* its path: it researches the real web, reasons through the concrete consequences, and reports back the future it lived. You watch the branches grow side by side in real time, then a final agent weighs them and returns a recommendation with a confidence score.
 
-Ask it "Learn Rust or Go next?" and you do not get one hedged answer. You get two agents, one committed to each path, each running its own searches ("Rust borrow checker problems", "Go adoption cloud infrastructure", real URLs pulled and read), each writing an honest verdict for the life it lived. Then the oracle picks: **Rust, 78% confidence**, with the reasoning that sold it.
+Ask it "Learn Rust or Go next?" and you do not get one hedged answer. You get two agents, one per path, each running real searches ("Rust borrow checker problems", "Go adoption cloud infrastructure", real URLs pulled and read) and writing an honest verdict for the life it lived. Then the oracle picks: **Rust, 78% confidence**, with the reasoning that sold it.
 
 It is built as a calm, cartographic instrument on warm paper, not another dark dashboard. The point is to make a branching decision feel like something you can watch happen.
 
@@ -36,6 +36,8 @@ Three steps, all driven by the Hermes Agent REST API running locally:
 My first instinct was to use Hermes' built-in `delegate_task` to fan out subagents from a single run. I read the source before committing, and found the catch: `delegate_task` emits rich per-child events (`subagent.start`, `subagent.thinking`, `subagent.tool`) but those are consumed by the terminal UI and are *intentionally not forwarded* over the REST API. Over HTTP, a delegated fan-out collapses into one opaque tool call with no visible branches.
 
 So the orchestration lives in the app: N independent sessions, each fully observable. The upside is that every branch streams its own `assistant.delta` reasoning and `tool.started` research steps, with its own token cost, which is exactly what makes the live tree possible.
+
+Worth heading off the obvious follow-up: Hermes' REST API does expose a native `POST /api/sessions/{id}/fork` endpoint that tracks session lineage through SessionDB, mirroring the CLI's `/branch`. Fork does not use it. Native fork creates branched lineage and history, not N independently-observable concurrent live streams. To render a live tree where every branch shows its own research and reasoning as it happens, you need N separate sessions streaming in parallel. Same reason `delegate_task` does not work here: a forked-but-shared transport gives you one resumable history, not many simultaneous observable runs.
 
 ### The bug worth sharing
 
