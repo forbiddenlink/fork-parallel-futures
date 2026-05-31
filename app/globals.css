@@ -1,0 +1,204 @@
+@import "tailwindcss";
+
+/*
+  Fork — Parallel Futures
+  Aesthetic: an oracle / cartographic instrument. Warm vellum paper, deep ink,
+  antique brass, with madder-red reserved for the winning verdict and a muted
+  slate-teal for branches in motion. No neon, no glass, no gradient text.
+*/
+
+:root {
+  /* Surfaces */
+  --vellum: #f3ead9; /* page base — aged paper */
+  --vellum-deep: #ece0c9; /* recessed panels */
+  --parchment-edge: #d8c7a4; /* hairline rules / borders */
+
+  /* Ink */
+  --ink: #211b13; /* primary text */
+  --ink-soft: #4a4034; /* secondary text */
+  --ink-faint: #7a6e5b; /* tertiary / captions */
+
+  /* Accents */
+  --brass: #a9772f; /* instrument accent, root node */
+  --brass-deep: #7d5618;
+  --madder: #8c3b2e; /* the verdict / winner */
+  --teal: #3c5b56; /* branch-in-motion */
+  --teal-soft: #5b7d77;
+
+  /* Per-branch ribbon hues (rotated by index) */
+  --branch-0: #7d5618; /* ochre */
+  --branch-1: #3c5b56; /* teal */
+  --branch-2: #6a3f52; /* plum */
+}
+
+@theme inline {
+  --color-vellum: var(--vellum);
+  --color-vellum-deep: var(--vellum-deep);
+  --color-parchment-edge: var(--parchment-edge);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-brass: var(--brass);
+  --color-brass-deep: var(--brass-deep);
+  --color-madder: var(--madder);
+  --color-teal: var(--teal);
+  --color-teal-soft: var(--teal-soft);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+html {
+  background-color: var(--vellum);
+  /* Faint contour-map texture: concentric grade lines, like an oracle's chart. */
+  background-image:
+    radial-gradient(
+      circle at 18% 12%,
+      rgba(125, 86, 24, 0.05) 0,
+      rgba(125, 86, 24, 0.05) 1px,
+      transparent 1px,
+      transparent 14px
+    ),
+    radial-gradient(
+      circle at 82% 78%,
+      rgba(60, 91, 86, 0.045) 0,
+      rgba(60, 91, 86, 0.045) 1px,
+      transparent 1px,
+      transparent 18px
+    );
+  background-attachment: fixed;
+}
+
+body {
+  color: var(--ink);
+  font-family: var(--font-body), Georgia, "Times New Roman", serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-optical-sizing: auto;
+}
+.font-readout {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  letter-spacing: -0.02em;
+}
+
+/* A thin double rule used to frame the oracle plate. */
+.oracle-rule {
+  border-image: repeating-linear-gradient(
+      90deg,
+      var(--parchment-edge) 0,
+      var(--parchment-edge) 6px,
+      transparent 6px,
+      transparent 10px
+    )
+    1;
+}
+
+/* ---- Motion (restrained, transform/opacity only) ---- */
+
+@keyframes fork-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fork-draw {
+  from {
+    stroke-dashoffset: var(--draw-len, 240);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fork-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes dial-sweep {
+  from {
+    stroke-dashoffset: var(--dial-from);
+  }
+  to {
+    stroke-dashoffset: var(--dial-to);
+  }
+}
+
+.dial-fill {
+  animation: dial-sweep 1s ease-out both;
+}
+
+@keyframes fork-settle {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  60% {
+    transform: scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.anim-rise {
+  animation: fork-rise 0.5s ease-out both;
+}
+.anim-draw {
+  stroke-dasharray: var(--draw-len, 240);
+  animation: fork-draw 1.1s ease-out both;
+}
+.anim-pulse {
+  animation: fork-pulse 1.6s ease-in-out infinite;
+}
+.anim-settle {
+  animation: fork-settle 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-rise,
+  .anim-draw,
+  .anim-pulse,
+  .anim-settle,
+  .dial-fill {
+    animation: none !important;
+  }
+  .anim-draw {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+  html {
+    background-attachment: scroll;
+  }
+}
+
+/* Custom scrollbars inside branch reasoning panes — keep them paper-toned. */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--parchment-edge) transparent;
+}
+.thin-scroll::-webkit-scrollbar {
+  width: 7px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: var(--parchment-edge);
+  border-radius: 999px;
+}
