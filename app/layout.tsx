@@ -29,10 +29,32 @@ const spaceMono = Space_Mono({
   display: "swap",
 });
 
+const siteTitle = "Fork: Parallel Futures";
+const siteDescription =
+  "Type a hard decision. Spin up parallel Hermes agents, each living out one path, researching, reasoning, and reporting back. Watch the futures branch in real time, then get a recommendation.";
+
 export const metadata: Metadata = {
-  title: "Fork — Parallel Futures",
-  description:
-    "Type a hard decision. Spin up parallel Hermes agents, each living out one path — researching, reasoning, and reporting back. Watch the futures branch in real time, then get a recommendation.",
+  title: siteTitle,
+  description: siteDescription,
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    type: "website",
+    images: [
+      {
+        url: "/cover.png",
+        width: 1000,
+        height: 704,
+        alt: "Fork: Parallel Futures",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/cover.png"],
+  },
 };
 
 export default function RootLayout({

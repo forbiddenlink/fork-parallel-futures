@@ -24,12 +24,12 @@ export default function Home() {
             Fork
             <span className="font-display text-3xl font-normal italic text-ink-soft">
               {" "}
-              — parallel futures
+              : parallel futures
             </span>
           </h1>
           <p className="mt-4 max-w-xl font-body text-[1.02rem] leading-relaxed text-ink-soft">
             Name a hard decision. Fork spins up a separate{" "}
-            <span className="italic">Hermes</span> agent for each path — each one
+            <span className="italic">Hermes</span> agent for each path, each one
             researches the web, reasons out the consequences, and reports back
             the future it lived. Watch them branch, then read the oracle&rsquo;s
             verdict.
@@ -79,8 +79,8 @@ export default function Home() {
       <footer className="border-t border-parchment-edge/60 px-5 py-6 sm:px-8">
         <p className="mx-auto max-w-6xl font-readout text-[0.62rem] leading-relaxed tracking-[0.04em] text-ink-faint">
           Prototype for the Hermes Agent Challenge. Each future is a separate
-          Hermes agent session orchestrated in parallel — not a single
-          delegate_task call — so every branch streams its own research and
+          Hermes agent session orchestrated in parallel, not a single
+          delegate_task call, so every branch streams its own research and
           reasoning live. Inspired by Hermes RFC #31392 (&ldquo;auto-forking
           subagents&rdquo;).
         </p>

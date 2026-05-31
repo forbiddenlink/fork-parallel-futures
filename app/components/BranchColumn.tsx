@@ -71,7 +71,7 @@ export function BranchColumn({ branch, isWinner, complete }: Props) {
             className="font-readout text-[0.66rem] tabular-nums text-ink-faint"
             title="per-branch usage"
           >
-            {cost ?? "—"}
+            {cost ?? "·"}
           </span>
         </div>
       </header>
