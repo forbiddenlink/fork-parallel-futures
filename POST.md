@@ -23,6 +23,8 @@ It is built as a calm, cartographic instrument on warm paper, not another dark d
 - Each option becomes its own column: live research steps, streaming reasoning, a verdict for that path.
 - The synthesis card resolves last: the winning path, a confidence dial, and why.
 
+![A real run: "Take the startup job, or stay at the big stable company?" forks into three researched futures, each pulling real sources (Wharton, UCLA, layoff data), then the oracle resolves on "Maintain stability" at 72 percent confidence with the paths not taken](public/fork-live-verdict.png)
+
 ## How it works
 
 Three steps, all driven by the Hermes Agent REST API running locally:
