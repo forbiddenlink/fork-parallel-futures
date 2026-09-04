@@ -1,7 +1,7 @@
 {
   "name": "fork",
   "version": "0.1.0",
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@11.25.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
