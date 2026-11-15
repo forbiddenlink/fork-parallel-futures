@@ -104,7 +104,7 @@ glassmorphism, no gradient text.
 cp .env.local.example .env.local
 # then edit .env.local and set HERMES_API_KEY (and HERMES_API_URL if not local)
 
-pnpm install   # already installed in this scaffold
+pnpm install
 pnpm dev
 ```
 
