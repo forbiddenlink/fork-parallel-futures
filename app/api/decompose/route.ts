@@ -8,10 +8,18 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { chatOnce } from "@/lib/hermes";
+import {
+  createRateLimiter,
+  decisionTooLong,
+  RATE_WINDOW_MS,
+  rateLimited,
+} from "@/lib/guard";
 import type { DecomposeResult, ForkOption } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const limiter = createRateLimiter({ limit: 10, windowMs: RATE_WINDOW_MS });
 
 const SYSTEM_PROMPT = (decision: string) => `You break a hard decision into its concrete, mutually-distinct options.
 
@@ -25,6 +33,8 @@ Respond with ONLY a JSON object, no prose, no markdown fences, in exactly this s
 Use between 2 and 3 options.`;
 
 export async function POST(req: NextRequest) {
+  const limited = rateLimited(limiter, req.headers);
+  if (limited) return limited;
   let decision: string;
   try {
     const body = (await req.json()) as { decision?: unknown };
@@ -35,6 +45,8 @@ export async function POST(req: NextRequest) {
       );
     }
     decision = body.decision.trim();
+    const tooLong = decisionTooLong(decision);
+    if (tooLong) return tooLong;
   } catch {
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
   }

@@ -1,5 +1,6 @@
 "use client";
 
+import { MAX_DECISION_CHARS } from "@/lib/guard";
 import { useState } from "react";
 
 interface Props {
@@ -41,6 +42,7 @@ export function DecisionForm({ onSubmit, disabled, running, onReset }: Props) {
           onChange={(e) => setValue(e.target.value)}
           placeholder="e.g. Take job A or job B?"
           autoComplete="off"
+          maxLength={MAX_DECISION_CHARS}
           className="min-w-0 flex-1 bg-vellum px-4 py-3 font-body text-lg text-ink outline-none placeholder:text-ink-faint/70 focus:ring-1 focus:ring-brass"
           style={{ border: "1px solid var(--parchment-edge)" }}
         />
