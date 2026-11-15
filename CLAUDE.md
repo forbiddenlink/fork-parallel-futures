@@ -12,7 +12,7 @@ drives them concurrently, since Hermes drops per-branch subagent events over a s
 ## Stack
 
 Next.js 16.3.4 (App Router), React 19.2, TypeScript 7, Tailwind CSS 4. pnpm workspace
-(`packageManager: pnpm@10.34.5`, pnpm override pins `postcss` to `>=8.5.23 <9`).
+(`packageManager: pnpm@10.34.9`, pnpm override pins `postcss` to `>=8.5.23 <9`).
 
 Next.js 16 has breaking changes from training-data-era Next.js. Read the relevant guide in
 `node_modules/next/dist/docs/` before writing code against it, and heed deprecation notices.
