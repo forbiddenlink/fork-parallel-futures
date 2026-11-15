@@ -8,10 +8,18 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { chatOnce } from "@/lib/hermes";
+import {
+  createRateLimiter,
+  decisionTooLong,
+  RATE_WINDOW_MS,
+  rateLimited,
+} from "@/lib/guard";
 import type { SynthesisResult } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const limiter = createRateLimiter({ limit: 10, windowMs: RATE_WINDOW_MS });
 
 interface BranchConclusionInput {
   label: string;
@@ -46,6 +54,8 @@ Respond with ONLY a JSON object, no prose, no markdown fences, in exactly this s
 }
 
 export async function POST(req: NextRequest) {
+  const limited = rateLimited(limiter, req.headers);
+  if (limited) return limited;
   let decision: string;
   let branches: BranchConclusionInput[];
   try {
@@ -63,6 +73,8 @@ export async function POST(req: NextRequest) {
       );
     }
     decision = body.decision.trim();
+    const tooLong = decisionTooLong(decision);
+    if (tooLong) return tooLong;
     branches = body.branches
       .map((b) => {
         const o = (b ?? {}) as Record<string, unknown>;

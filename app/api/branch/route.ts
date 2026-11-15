@@ -12,7 +12,16 @@
 
 import { NextRequest } from "next/server";
 import { createSession, openChatStream } from "@/lib/hermes";
+import {
+  createRateLimiter,
+  decisionTooLong,
+  RATE_WINDOW_MS,
+  rateLimited,
+} from "@/lib/guard";
 import type { ForkOption } from "@/lib/types";
+
+// 3 options per run, so 18 streams is about 6 runs per window per client.
+const limiter = createRateLimiter({ limit: 18, windowMs: RATE_WINDOW_MS });
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -47,6 +56,8 @@ function sseLine(obj: unknown): Uint8Array {
 }
 
 export async function POST(req: NextRequest) {
+  const limited = rateLimited(limiter, req.headers);
+  if (limited) return limited;
   let decision: string;
   let option: ForkOption;
   try {
@@ -62,6 +73,8 @@ export async function POST(req: NextRequest) {
       return jsonError("Missing 'option.label'.", 400);
     }
     decision = body.decision.trim();
+    const tooLong = decisionTooLong(decision);
+    if (tooLong) return tooLong;
     option = {
       label: o.label.trim(),
       summary: typeof o.summary === "string" ? o.summary.trim() : "",
