@@ -120,7 +120,12 @@ export async function consumeSseStream(
 
         let raw: Record<string, unknown>;
         try {
-          raw = JSON.parse(payload) as Record<string, unknown>;
+          const parsed: unknown = JSON.parse(payload);
+          // Malformed upstream payloads must not crash an otherwise valid stream.
+          if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+            continue;
+          }
+          raw = parsed as Record<string, unknown>;
         } catch {
           continue;
         }
