@@ -4,6 +4,8 @@
 
 A submission for the **Hermes Agent Challenge**.
 
+Live: there is no hosted instance. The app needs a Hermes Agent API server that you run yourself (see Prerequisites), so you run Fork locally.
+
 Type a hard decision (_"Rust or Go next?"_, _"take job A or B?"_) and Fork
 spins up a **separate Hermes agent for each path**. Each agent autonomously
 **researches the web**, reasons through the concrete consequences of living out
@@ -59,6 +61,7 @@ reasoning), `tool.started` / `tool.completed` (rendered as research steps),
 | `lib/hermes.ts` | Server-only Hermes client (holds the API key + base URL; `createSession`, `openChatStream`, `chatOnce`). |
 | `lib/types.ts` | Shared types + the typed Hermes SSE event envelope. |
 | `lib/sse-client.ts` | Client-side SSE reader (fetch + `ReadableStream`, not `EventSource`, so it can POST a JSON body). |
+| `lib/guard.ts` | Best-effort abuse guard used by all three API routes: caps decision length and rate limits per client, in process memory only (not a spend cap, resets on restart). |
 | `lib/useFork.ts` | Orchestration hook: decompose → N parallel branches → synthesize, as a reducer-driven state machine. |
 | `app/api/decompose/route.ts` | Decompose call + robust JSON extraction. |
 | `app/api/branch/route.ts` | Per-branch SSE proxy (creates session, pipes the stream). |
@@ -118,10 +121,14 @@ the futures branch.
 | `HERMES_API_KEY` | Bearer token. **Server-side only.** |
 | `HERMES_API_URL` | Hermes base URL. Defaults to `http://127.0.0.1:8642`. |
 
-## Build
+## Scripts
 
 ```bash
-pnpm build
+pnpm dev      # next dev
+pnpm build    # next build
+pnpm start    # next start
+pnpm lint     # eslint
+pnpm test     # node --test tests/*.node-test.mjs (guard and SSE client)
 ```
 
 Produces a clean production build; the three `/api/*` routes are server-rendered
